@@ -1,13 +1,38 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import LoadingScreen from '@/components/LoadingScreen';
+import Navbar from '@/components/Navbar';
+import HeroSection from '@/components/HeroSection';
+import WhyH2Section from '@/components/WhyH2Section';
+import ProgramsSection from '@/components/ProgramsSection';
+import AICoachSection from '@/components/AICoachSection';
+import TransformationsSection from '@/components/TransformationsSection';
+import TrainersSection from '@/components/TrainersSection';
+import TestimonialsSection from '@/components/TestimonialsSection';
+import ContactSection from '@/components/ContactSection';
+import Footer from '@/components/Footer';
 
 const Index = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <>
+      {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+      
+      <div className={`transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+        <Navbar />
+        <main>
+          <HeroSection />
+          <WhyH2Section />
+          <ProgramsSection />
+          <AICoachSection />
+          <TransformationsSection />
+          <TrainersSection />
+          <TestimonialsSection />
+          <ContactSection />
+        </main>
+        <Footer />
       </div>
-    </div>
+    </>
   );
 };
 
