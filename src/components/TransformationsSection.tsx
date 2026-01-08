@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 
@@ -32,7 +31,6 @@ const transformations = [
 
 const TransformationsSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
     <section id="transformations" className="py-24 relative overflow-hidden" ref={ref}>
@@ -42,8 +40,9 @@ const TransformationsSection = () => {
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
@@ -65,9 +64,10 @@ const TransformationsSection = () => {
           {transformations.map((transformation, index) => (
             <motion.div
               key={transformation.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <TransformationCard {...transformation} />
             </motion.div>
@@ -76,9 +76,10 @@ const TransformationsSection = () => {
 
         {/* Progress Stats */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
         >
           {[
@@ -86,7 +87,7 @@ const TransformationsSection = () => {
             { value: '98%', label: 'Success Rate' },
             { value: '50,000+', label: 'Kg Lost' },
             { value: '4.9/5', label: 'Member Rating' },
-          ].map((stat, i) => (
+          ].map((stat) => (
             <div key={stat.label} className="card-premium p-6 text-center">
               <div className="font-display text-3xl md:text-4xl font-bold text-primary text-glow mb-2">
                 {stat.value}
@@ -155,7 +156,7 @@ const TransformationCard = ({
 
         {/* Slider Line */}
         <div
-          className="absolute top-0 bottom-0 w-1 bg-primary shadow-[0_0_10px_hsl(195_100%_50%)] z-5"
+          className="absolute top-0 bottom-0 w-1 bg-primary shadow-[0_0_10px_hsl(200_55%_50%)] z-5"
           style={{ left: `${sliderPosition}%` }}
         >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-primary flex items-center justify-center">
