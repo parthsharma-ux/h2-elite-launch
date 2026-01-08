@@ -1,8 +1,15 @@
 import { motion } from 'framer-motion';
-import { Play, ChevronDown } from 'lucide-react';
+import { Play, ChevronDown, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
 
+const WHATSAPP_NUMBER = '919314010442';
+
 const HeroSection = () => {
+  const handleJoinNow = () => {
+    const message = encodeURIComponent("Hi! I'm interested in joining H2 FITNESS. Please share membership details.");
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+  };
+
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Video Background */}
@@ -12,7 +19,9 @@ const HeroSection = () => {
           muted
           loop
           playsInline
-          className="w-full h-full object-cover"
+          preload="auto"
+          className="w-full h-full object-cover scale-105"
+          style={{ filter: 'brightness(0.9)' }}
         >
           <source src="/videos/hero-gym.mp4" type="video/mp4" />
         </video>
@@ -88,10 +97,11 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Button variant="hero" size="xl" className="pulse-glow">
+          <Button variant="hero" size="xl" className="pulse-glow" onClick={handleJoinNow}>
+            <MessageCircle className="w-5 h-5 mr-2" />
             Join Now
           </Button>
-          <Button variant="heroOutline" size="xl">
+          <Button variant="heroOutline" size="xl" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
             <Play className="w-5 h-5 mr-2" />
             Free Trial Workout
           </Button>

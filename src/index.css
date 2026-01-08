@@ -16,8 +16,8 @@
     --popover: 240 10% 6%;
     --popover-foreground: 0 0% 98%;
 
-    /* Electric Blue Primary */
-    --primary: 195 100% 50%;
+    /* Electric Blue Primary - Toned down */
+    --primary: 195 85% 45%;
     --primary-foreground: 240 10% 4%;
 
     /* Metallic Silver Secondary */
@@ -27,8 +27,8 @@
     --muted: 240 10% 12%;
     --muted-foreground: 220 10% 60%;
 
-    /* Electric Blue Accent */
-    --accent: 195 100% 50%;
+    /* Electric Blue Accent - Toned down */
+    --accent: 195 85% 45%;
     --accent-foreground: 240 10% 4%;
 
     --destructive: 0 84% 60%;
@@ -41,7 +41,7 @@
     --radius: 0.75rem;
 
     /* Custom H2 Fitness Variables */
-    --electric-blue: 195 100% 50%;
+    --electric-blue: 195 85% 45%;
     --metallic-silver: 220 10% 70%;
     --deep-black: 240 10% 4%;
     --dark-surface: 240 10% 8%;
@@ -74,13 +74,13 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 6%;
     --popover-foreground: 0 0% 98%;
-    --primary: 195 100% 50%;
+    --primary: 195 85% 45%;
     --primary-foreground: 240 10% 4%;
     --secondary: 220 10% 25%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 10% 12%;
     --muted-foreground: 220 10% 60%;
-    --accent: 195 100% 50%;
+    --accent: 195 85% 45%;
     --accent-foreground: 240 10% 4%;
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
@@ -261,12 +261,12 @@
     background: hsl(var(--primary) / 0.5);
   }
 
-  /* Video Overlay */
+  /* Video Overlay - Reduced opacity for better video visibility */
   .video-overlay {
     background: linear-gradient(to bottom, 
-      hsl(240 10% 4% / 0.4) 0%, 
-      hsl(240 10% 4% / 0.6) 50%, 
-      hsl(240 10% 4% / 0.95) 100%
+      hsl(240 10% 4% / 0.2) 0%, 
+      hsl(240 10% 4% / 0.4) 50%, 
+      hsl(240 10% 4% / 0.85) 100%
     );
   }
 
