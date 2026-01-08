@@ -11,6 +11,7 @@ import TrainersSection from '@/components/TrainersSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
+import WhatsAppButton from '@/components/WhatsAppButton';
 import { Toaster } from 'sonner';
 
 const Index = () => {
@@ -35,6 +36,7 @@ const Index = () => {
           <ContactSection />
         </main>
         <Footer />
+        <WhatsAppButton />
       </div>
     </>
   );
