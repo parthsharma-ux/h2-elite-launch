@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Menu, X, Dumbbell } from 'lucide-react';
+import { Menu, X, Dumbbell, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
+
+const WHATSAPP_NUMBER = '919314010442';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,12 +17,17 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleJoinNow = () => {
+    const message = encodeURIComponent("Hi! I'm interested in joining H2 FITNESS. Please share membership details.");
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+  };
+
   const navLinks = [
     { name: 'Home', href: '#home' },
     { name: 'Programs', href: '#programs' },
+    { name: 'Pricing', href: '#pricing' },
     { name: 'AI Coach', href: '#ai-coach' },
     { name: 'Trainers', href: '#trainers' },
-    { name: 'Transformations', href: '#transformations' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -54,7 +61,8 @@ const Navbar = () => {
               {link.name}
             </a>
           ))}
-          <Button variant="hero" size="default">
+          <Button variant="hero" size="default" onClick={handleJoinNow}>
+            <MessageCircle className="w-4 h-4 mr-2" />
             Join Now
           </Button>
         </div>
@@ -89,7 +97,8 @@ const Navbar = () => {
               {link.name}
             </a>
           ))}
-          <Button variant="hero" size="default" className="mt-2">
+          <Button variant="hero" size="default" className="mt-2" onClick={handleJoinNow}>
+            <MessageCircle className="w-4 h-4 mr-2" />
             Join Now
           </Button>
         </div>

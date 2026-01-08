@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Dumbbell, Instagram, Facebook, Youtube, Twitter, Heart } from 'lucide-react';
+import { Dumbbell, Instagram, Facebook, Youtube, Twitter, Heart, MapPin, Phone } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -8,7 +8,7 @@ const Footer = () => {
     company: [
       { name: 'About Us', href: '#' },
       { name: 'Our Team', href: '#trainers' },
-      { name: 'Careers', href: '#' },
+      { name: 'Pricing', href: '#pricing' },
       { name: 'Contact', href: '#contact' },
     ],
     programs: [
@@ -21,7 +21,7 @@ const Footer = () => {
       { name: 'FAQs', href: '#' },
       { name: 'Privacy Policy', href: '#' },
       { name: 'Terms of Service', href: '#' },
-      { name: 'Membership', href: '#' },
+      { name: 'Membership', href: '#pricing' },
     ],
   };
 
@@ -45,9 +45,19 @@ const Footer = () => {
                 <span className="text-primary"> FITNESS</span>
               </span>
             </a>
-            <p className="text-muted-foreground mb-6 max-w-sm leading-relaxed">
+            <p className="text-muted-foreground mb-4 max-w-sm leading-relaxed">
               Transform your body and mind with premium fitness training. Join the elite community of fitness enthusiasts at H2 FITNESS.
             </p>
+            <div className="text-muted-foreground text-sm space-y-2 mb-6">
+              <p className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-primary" />
+                Hathoj, Jaipur, Rajasthan
+              </p>
+              <p className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-primary" />
+                +91 93140 10442
+              </p>
+            </div>
             {/* Social Links */}
             <div className="flex items-center gap-4">
               {socials.map((social) => (

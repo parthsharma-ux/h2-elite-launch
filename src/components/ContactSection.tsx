@@ -3,6 +3,10 @@ import { useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { MapPin, Phone, Mail, MessageCircle, Clock, Send, CheckCircle } from 'lucide-react';
 import { Button } from './ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+
+const WHATSAPP_NUMBER = '919314010442';
 
 const ContactSection = () => {
   const ref = useRef(null);
@@ -13,27 +17,53 @@ const ContactSection = () => {
     goal: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', phone: '', goal: '' });
-    }, 3000);
+    
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.goal) {
+      toast.error('Please fill all fields');
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      const { error } = await supabase
+        .from('leads')
+        .insert({
+          name: formData.name.trim(),
+          phone: formData.phone.trim(),
+          goal: formData.goal,
+        });
+
+      if (error) throw error;
+
+      setIsSubmitted(true);
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({ name: '', phone: '', goal: '' });
+      }, 3000);
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      toast.error('Failed to submit. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const contactInfo = [
     {
       icon: MapPin,
       title: 'Visit Us',
-      info: '123 Fitness Street, Gym District',
-      subInfo: 'Mumbai, Maharashtra 400001',
+      info: 'Hathoj, Jaipur',
+      subInfo: 'Rajasthan, India',
     },
     {
       icon: Phone,
       title: 'Call Us',
-      info: '+91 98765 43210',
+      info: '+91 93140 10442',
       subInfo: 'Mon-Sat: 6AM - 10PM',
     },
     {
@@ -115,10 +145,10 @@ const ContactSection = () => {
               ))}
             </div>
 
-            {/* Map */}
+            {/* Map - Hathoj, Jaipur */}
             <div className="card-premium overflow-hidden h-64 lg:h-80">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d241317.11609823277!2d72.74109995709657!3d19.08219783958221!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c6306644edc1%3A0x5da4ed8f8d648c69!2sMumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1699999999999!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14231.41234567890!2d75.7849!3d26.9550!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db3d1234567890%3A0xabcdef123456!2sHathoj%2C%20Jaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1699999999999!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}
@@ -131,7 +161,7 @@ const ContactSection = () => {
             {/* Quick Contact Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="https://wa.me/919876543210"
+                href={`https://wa.me/${WHATSAPP_NUMBER}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1"
@@ -141,7 +171,7 @@ const ContactSection = () => {
                   WhatsApp Us
                 </Button>
               </a>
-              <a href="tel:+919876543210" className="flex-1">
+              <a href="tel:+919314010442" className="flex-1">
                 <Button variant="heroOutline" size="xl" className="w-full">
                   <Phone className="w-5 h-5 mr-2" />
                   Call Now
@@ -230,9 +260,9 @@ const ContactSection = () => {
                     </select>
                   </div>
 
-                  <Button variant="hero" size="xl" className="w-full" type="submit">
+                  <Button variant="hero" size="xl" className="w-full" type="submit" disabled={isLoading}>
                     <Send className="w-5 h-5 mr-2" />
-                    Request Free Consultation
+                    {isLoading ? 'Submitting...' : 'Request Free Consultation'}
                   </Button>
 
                   <p className="text-center text-muted-foreground text-xs">
