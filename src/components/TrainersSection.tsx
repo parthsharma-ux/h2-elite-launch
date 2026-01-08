@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Instagram, Award, Users } from 'lucide-react';
 
@@ -40,7 +39,6 @@ const trainers = [
 
 const TrainersSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
     <section id="trainers" className="py-24 relative overflow-hidden" ref={ref}>
@@ -50,8 +48,9 @@ const TrainersSection = () => {
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
@@ -73,9 +72,10 @@ const TrainersSection = () => {
           {trainers.map((trainer, index) => (
             <motion.div
               key={trainer.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group"
             >
               <div className="card-premium overflow-hidden">
@@ -91,7 +91,7 @@ const TrainersSection = () => {
                   
                   {/* Glow Effect */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(195_100%_50%_/_0.2)_0%,transparent_70%)]" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(200_55%_50%_/_0.15)_0%,transparent_70%)]" />
                   </div>
 
                   {/* Social Icon */}

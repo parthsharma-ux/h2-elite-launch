@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Bot, Sparkles, Calculator, Utensils, Dumbbell, ChevronRight } from 'lucide-react';
+import { Bot, Sparkles, Calculator, Utensils, Dumbbell, ChevronRight, Loader2, Lightbulb } from 'lucide-react';
 import { Button } from './ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface FormData {
   age: string;
@@ -19,12 +21,14 @@ interface Results {
   fats: number;
   dietPlan: string[];
   workoutSplit: string[];
+  tip?: string;
 }
 
 const AICoachSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [step, setStep] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     age: '',
     height: '',
@@ -37,14 +41,42 @@ const AICoachSection = () => {
   const goals = ['Fat Loss', 'Muscle Building', 'Strength', 'Maintenance'];
   const diets = ['Vegetarian', 'Non-Vegetarian'];
 
-  const calculateResults = () => {
+  const generateAIPlan = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-fitness-coach', {
+        body: formData,
+      });
+
+      if (error) throw error;
+
+      setResults({
+        calories: data.calories,
+        protein: data.protein,
+        carbs: data.carbs,
+        fats: data.fats,
+        dietPlan: data.dietPlan,
+        workoutSplit: data.workoutSplit,
+        tip: data.tip,
+      });
+      setStep(6);
+    } catch (error) {
+      console.error('AI Coach error:', error);
+      toast.error('Failed to generate plan. Using fallback calculation.');
+      // Fallback to local calculation
+      calculateLocalResults();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const calculateLocalResults = () => {
     const weight = parseFloat(formData.weight);
     const height = parseFloat(formData.height);
     const age = parseInt(formData.age);
     
-    // BMR calculation (Mifflin-St Jeor)
     let bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-    let tdee = bmr * 1.55; // Moderate activity
+    let tdee = bmr * 1.55;
     
     let calories = tdee;
     if (formData.goal === 'Fat Loss') calories = tdee - 500;
@@ -91,7 +123,7 @@ const AICoachSection = () => {
 
   const handleNext = () => {
     if (step < 5) setStep(step + 1);
-    else calculateResults();
+    else generateAIPlan();
   };
 
   const renderStep = () => {
@@ -111,7 +143,7 @@ const AICoachSection = () => {
               Meet Your AI Fitness Coach
             </h3>
             <p className="text-muted-foreground mb-8">
-              Get a personalized diet and workout plan in just 5 questions!
+              Get a personalized diet and workout plan powered by AI in just 5 questions!
             </p>
             <Button variant="hero" onClick={() => setStep(1)}>
               <Sparkles className="w-5 h-5 mr-2" />
@@ -170,7 +202,7 @@ const AICoachSection = () => {
                   className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                     formData.goal === goal
                       ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border bg-card hover:border-primary/50'
+                      : 'border-border bg-card hover:border-primary/50 text-foreground'
                   }`}
                 >
                   {goal}
@@ -205,7 +237,7 @@ const AICoachSection = () => {
                   className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                     formData.diet === diet
                       ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border bg-card hover:border-primary/50'
+                      : 'border-border bg-card hover:border-primary/50 text-foreground'
                   }`}
                 >
                   {diet}
@@ -215,10 +247,19 @@ const AICoachSection = () => {
             <Button
               variant="hero"
               onClick={handleNext}
-              disabled={!formData.diet}
+              disabled={!formData.diet || isLoading}
               className="w-full"
             >
-              Generate My Plan <Sparkles className="w-5 h-5 ml-2" />
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  Generate My Plan <Sparkles className="w-5 h-5 ml-2" />
+                </>
+              )}
             </Button>
           </motion.div>
         );
@@ -231,10 +272,20 @@ const AICoachSection = () => {
           >
             <div className="text-center mb-6">
               <h3 className="font-display text-2xl font-bold text-foreground mb-2">
-                Your Personalized Plan
+                Your AI-Powered Plan
               </h3>
-              <p className="text-muted-foreground">Based on your {formData.goal} goal</p>
+              <p className="text-muted-foreground">Personalized for your {formData.goal} goal</p>
             </div>
+
+            {/* AI Tip */}
+            {results.tip && (
+              <div className="card-premium p-4 border-primary/30 bg-primary/5">
+                <div className="flex items-start gap-3">
+                  <Lightbulb className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                  <p className="text-foreground text-sm">{results.tip}</p>
+                </div>
+              </div>
+            )}
 
             {/* Macros */}
             <div className="grid grid-cols-2 gap-4">
@@ -297,14 +348,15 @@ const AICoachSection = () => {
     <section id="ai-coach" className="py-24 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-muted/10 via-background to-muted/10" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(195_100%_50%_/_0.05)_0%,transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(200_55%_50%_/_0.03)_0%,transparent_70%)]" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
           >
             <span className="inline-block px-4 py-2 border border-primary/30 rounded-full text-primary text-sm font-medium uppercase tracking-widest mb-4">
@@ -322,7 +374,8 @@ const AICoachSection = () => {
                 <motion.div
                   key={feature}
                   initial={{ opacity: 0, x: -20 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.3 + i * 0.1 }}
                   className="flex items-center gap-3"
                 >
@@ -336,7 +389,8 @@ const AICoachSection = () => {
           {/* Right - AI Coach Card */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="card-premium p-8 border-electric"
           >

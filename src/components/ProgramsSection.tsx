@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Flame, Dumbbell, TrendingUp, Zap, User, X } from 'lucide-react';
+import { Flame, Dumbbell, TrendingUp, Zap, User, X, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
+
+const WHATSAPP_NUMBER = '919314010442';
 
 const programs = [
   {
@@ -79,8 +80,12 @@ const programs = [
 
 const ProgramsSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selectedProgram, setSelectedProgram] = useState<typeof programs[0] | null>(null);
+
+  const handleStartProgram = (programTitle: string) => {
+    const message = encodeURIComponent(`Hi! I'm interested in the ${programTitle} program at H2 FITNESS. Please share more details.`);
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+  };
 
   return (
     <section id="programs" className="py-24 relative overflow-hidden" ref={ref}>
@@ -90,8 +95,9 @@ const ProgramsSection = () => {
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
@@ -113,9 +119,10 @@ const ProgramsSection = () => {
           {programs.map((program, index) => (
             <motion.div
               key={program.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
               className="card-premium group cursor-pointer overflow-hidden"
               onClick={() => setSelectedProgram(program)}
             >
@@ -217,7 +224,13 @@ const ProgramsSection = () => {
                 </div>
 
                 {/* CTA */}
-                <Button variant="hero" size="xl" className="w-full">
+                <Button 
+                  variant="hero" 
+                  size="xl" 
+                  className="w-full"
+                  onClick={() => handleStartProgram(selectedProgram.title)}
+                >
+                  <MessageCircle className="w-5 h-5 mr-2" />
                   Start This Program
                 </Button>
               </div>

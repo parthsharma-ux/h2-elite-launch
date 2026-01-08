@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 import { Star, Quote } from 'lucide-react';
 
@@ -43,7 +42,6 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -57,13 +55,14 @@ const TestimonialsSection = () => {
     <section className="py-24 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(195_100%_50%_/_0.05)_0%,transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(200_55%_50%_/_0.03)_0%,transparent_50%)]" />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
@@ -78,7 +77,13 @@ const TestimonialsSection = () => {
         </motion.div>
 
         {/* Testimonials Carousel */}
-        <div className="max-w-4xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="max-w-4xl mx-auto"
+        >
           <div className="relative">
             {testimonials.map((testimonial, index) => (
               <motion.div
@@ -144,12 +149,13 @@ const TestimonialsSection = () => {
               />
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Scrolling Logos / Trust Badges */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-16 pt-16 border-t border-border"
         >
