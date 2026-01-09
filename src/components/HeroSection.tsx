@@ -59,53 +59,41 @@ const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-6"
+        <div
+          className="mb-4 md:mb-6"
         >
-          <span className="inline-block px-4 py-2 border border-primary/30 rounded-full text-primary text-sm font-medium uppercase tracking-widest">
-            Premium Fitness Experience
+          <span className="inline-block px-3 md:px-4 py-1.5 md:py-2 border border-primary/30 rounded-full text-primary text-xs md:text-sm font-medium uppercase tracking-widest">
+            Premium Fitness
           </span>
-        </motion.div>
+        </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6"
+        <h1
+          className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-4 md:mb-6"
         >
           <span className="text-foreground">TRANSFORM YOUR</span>
           <br />
           <span className="text-foreground">BODY AT </span>
           <span className="text-primary text-glow-intense">H2 FITNESS</span>
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 font-body"
+        <p
+          className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-8 md:mb-10 font-body px-4"
         >
           Train like an athlete. Look like a champion.
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+        <div
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4"
         >
-          <Button variant="hero" size="xl" className="pulse-glow" onClick={handleJoinNow}>
-            <MessageCircle className="w-5 h-5 mr-2" />
+          <Button variant="hero" size="xl" className="pulse-glow w-full sm:w-auto" onClick={handleJoinNow}>
+            <MessageCircle className="w-4 h-4 md:w-5 md:h-5 mr-2" />
             Join Now
           </Button>
-          <Button variant="heroOutline" size="xl" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
-            <Play className="w-5 h-5 mr-2" />
-            Free Trial Workout
+          <Button variant="heroOutline" size="xl" className="w-full sm:w-auto" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
+            <Play className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+            Free Trial
           </Button>
-        </motion.div>
+        </div>
 
         {/* Heartbeat Effect */}
         <motion.div
@@ -123,37 +111,31 @@ const HeroSection = () => {
         </motion.div>
 
         {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="absolute bottom-10 left-0 right-0"
+        <div
+          className="absolute bottom-8 md:bottom-10 left-0 right-0"
         >
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto">
+            <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-3xl mx-auto">
               {[
-                { value: '5000+', label: 'Active Members' },
-                { value: '20+', label: 'Expert Trainers' },
-                { value: '15+', label: 'Years Experience' },
+                { value: '5000+', label: 'Members' },
+                { value: '20+', label: 'Trainers' },
+                { value: '15+', label: 'Years' },
               ].map((stat, index) => (
-                <motion.div
+                <div
                   key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.2 + index * 0.1 }}
                   className="text-center"
                 >
-                  <div className="font-display text-3xl md:text-4xl font-bold text-primary text-glow">
+                  <div className="font-display text-xl sm:text-2xl md:text-4xl font-bold text-primary text-glow">
                     {stat.value}
                   </div>
-                  <div className="text-muted-foreground text-sm uppercase tracking-wider">
+                  <div className="text-muted-foreground text-[10px] sm:text-xs md:text-sm uppercase tracking-wider">
                     {stat.label}
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
