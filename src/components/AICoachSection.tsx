@@ -416,24 +416,38 @@ const QuestionStep = ({
   placeholder: string;
   type: string;
   onNext: () => void;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, x: 20 }}
-    animate={{ opacity: 1, x: 0 }}
-    className="text-center"
-  >
-    <h3 className="font-display text-2xl font-bold text-foreground mb-6">{question}</h3>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      className="w-full px-6 py-4 bg-muted border border-border rounded-xl text-foreground text-center text-xl font-display focus:outline-none focus:border-primary transition-colors mb-6"
-    />
-    <Button variant="hero" onClick={onNext} disabled={!value} className="w-full">
-      Continue <ChevronRight className="w-5 h-5 ml-2" />
-    </Button>
-  </motion.div>
-);
+}) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && value) {
+      onNext();
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="text-center"
+    >
+      <h3 className="font-display text-2xl font-bold text-foreground mb-6">{question}</h3>
+      <input
+        type={type}
+        value={value}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        autoFocus
+        className="w-full px-6 py-4 bg-muted border border-border rounded-xl text-foreground text-center text-xl font-display focus:outline-none focus:border-primary transition-colors mb-6"
+      />
+      <Button variant="hero" onClick={onNext} disabled={!value} className="w-full">
+        Continue <ChevronRight className="w-5 h-5 ml-2" />
+      </Button>
+    </motion.div>
+  );
+};
 
 export default AICoachSection;
