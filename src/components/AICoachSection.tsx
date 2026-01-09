@@ -1,7 +1,5 @@
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
-import { Bot, Sparkles, Calculator, Utensils, Dumbbell, ChevronRight, Loader2, Lightbulb } from 'lucide-react';
+import { useState } from 'react';
+import { Bot, Sparkles, Calculator, Utensils, Dumbbell, ChevronRight, Loader2, Lightbulb, Target, Zap } from 'lucide-react';
 import { Button } from './ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -25,8 +23,6 @@ interface Results {
 }
 
 const AICoachSection = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [step, setStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -38,8 +34,16 @@ const AICoachSection = () => {
   });
   const [results, setResults] = useState<Results | null>(null);
 
-  const goals = ['Fat Loss', 'Muscle Building', 'Strength', 'Maintenance'];
-  const diets = ['Vegetarian', 'Non-Vegetarian'];
+  const goals = [
+    { name: 'Fat Loss', icon: '🔥' },
+    { name: 'Muscle Building', icon: '💪' },
+    { name: 'Strength', icon: '🏋️' },
+    { name: 'Maintenance', icon: '⚖️' },
+  ];
+  const diets = [
+    { name: 'Vegetarian', icon: '🥗' },
+    { name: 'Non-Vegetarian', icon: '🍗' },
+  ];
 
   const generateAIPlan = async () => {
     setIsLoading(true);
@@ -63,7 +67,6 @@ const AICoachSection = () => {
     } catch (error) {
       console.error('AI Coach error:', error);
       toast.error('Failed to generate plan. Using fallback calculation.');
-      // Fallback to local calculation
       calculateLocalResults();
     } finally {
       setIsLoading(false);
@@ -88,26 +91,26 @@ const AICoachSection = () => {
     const carbs = (calories - protein * 4 - fats * 9) / 4;
 
     const vegMeals = [
-      '🥣 Oatmeal with nuts and banana',
+      '🥣 Oatmeal with nuts & banana',
       '🥗 Quinoa salad with chickpeas',
-      '🍛 Dal with brown rice and vegetables',
+      '🍛 Dal with brown rice',
       '🥜 Protein shake with peanut butter',
-      '🧀 Paneer stir-fry with veggies',
+      '🧀 Paneer stir-fry',
     ];
 
     const nonVegMeals = [
-      '🍳 Eggs with whole wheat toast',
-      '🍗 Grilled chicken breast with rice',
+      '🍳 Eggs with toast',
+      '🍗 Grilled chicken with rice',
       '🐟 Salmon with sweet potato',
-      '🥩 Lean beef steak with vegetables',
-      '🍖 Turkey wrap with salad',
+      '🥩 Lean steak with veggies',
+      '🍖 Turkey wrap',
     ];
 
     const workoutSplits: Record<string, string[]> = {
-      'Fat Loss': ['Mon: HIIT Cardio', 'Tue: Upper Body', 'Wed: Active Rest', 'Thu: HIIT Cardio', 'Fri: Lower Body', 'Sat: Full Body Circuit', 'Sun: Rest'],
-      'Muscle Building': ['Mon: Chest & Triceps', 'Tue: Back & Biceps', 'Wed: Legs', 'Thu: Shoulders & Arms', 'Fri: Chest & Back', 'Sat: Legs & Core', 'Sun: Rest'],
-      'Strength': ['Mon: Squat Day', 'Tue: Bench Day', 'Wed: Rest', 'Thu: Deadlift Day', 'Fri: OHP Day', 'Sat: Accessory Work', 'Sun: Rest'],
-      'Maintenance': ['Mon: Full Body', 'Tue: Cardio', 'Wed: Upper Body', 'Thu: Rest', 'Fri: Lower Body', 'Sat: Active Recovery', 'Sun: Rest'],
+      'Fat Loss': ['Mon: HIIT', 'Tue: Upper', 'Wed: Rest', 'Thu: HIIT', 'Fri: Lower', 'Sat: Circuit', 'Sun: Rest'],
+      'Muscle Building': ['Mon: Chest', 'Tue: Back', 'Wed: Legs', 'Thu: Arms', 'Fri: Chest/Back', 'Sat: Legs', 'Sun: Rest'],
+      'Strength': ['Mon: Squat', 'Tue: Bench', 'Wed: Rest', 'Thu: Deadlift', 'Fri: OHP', 'Sat: Accessory', 'Sun: Rest'],
+      'Maintenance': ['Mon: Full Body', 'Tue: Cardio', 'Wed: Upper', 'Thu: Rest', 'Fri: Lower', 'Sat: Recovery', 'Sun: Rest'],
     };
 
     setResults({
@@ -130,82 +133,81 @@ const AICoachSection = () => {
     switch (step) {
       case 0:
         return (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="text-center"
-          >
-            <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
-              <Bot className="w-10 h-10 text-primary" />
+          <div className="text-center animate-fade-in">
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mx-auto mb-4 md:mb-6 border border-primary/20">
+              <Bot className="w-8 h-8 md:w-10 md:h-10 text-primary" />
             </div>
-            <h3 className="font-display text-2xl font-bold text-foreground mb-4">
-              Meet Your AI Fitness Coach
+            <h3 className="font-display text-xl md:text-2xl font-bold text-foreground mb-2 md:mb-4">
+              AI Fitness Coach
             </h3>
-            <p className="text-muted-foreground mb-8">
-              Get a personalized diet and workout plan powered by AI in just 5 questions!
+            <p className="text-muted-foreground text-sm md:text-base mb-6 md:mb-8 px-2">
+              Get your personalized fitness plan in 30 seconds
             </p>
-            <Button variant="hero" onClick={() => setStep(1)}>
-              <Sparkles className="w-5 h-5 mr-2" />
-              Start My Plan
+            <Button variant="hero" onClick={() => setStep(1)} className="w-full sm:w-auto">
+              <Sparkles className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+              Start Now
             </Button>
-          </motion.div>
+          </div>
         );
       case 1:
         return (
           <QuestionStep
-            question="What's your age?"
+            question="Your Age"
             value={formData.age}
             onChange={(val) => setFormData({ ...formData, age: val })}
-            placeholder="Enter your age"
+            placeholder="25"
             type="number"
             onNext={handleNext}
+            step={1}
+            total={5}
           />
         );
       case 2:
         return (
           <QuestionStep
-            question="What's your height? (cm)"
+            question="Height (cm)"
             value={formData.height}
             onChange={(val) => setFormData({ ...formData, height: val })}
-            placeholder="Enter height in cm"
+            placeholder="175"
             type="number"
             onNext={handleNext}
+            step={2}
+            total={5}
           />
         );
       case 3:
         return (
           <QuestionStep
-            question="What's your weight? (kg)"
+            question="Weight (kg)"
             value={formData.weight}
             onChange={(val) => setFormData({ ...formData, weight: val })}
-            placeholder="Enter weight in kg"
+            placeholder="70"
             type="number"
             onNext={handleNext}
+            step={3}
+            total={5}
           />
         );
       case 4:
         return (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-center"
-          >
-            <h3 className="font-display text-2xl font-bold text-foreground mb-6">
-              What's your fitness goal?
+          <div className="text-center animate-fade-in">
+            <ProgressIndicator current={4} total={5} />
+            <h3 className="font-display text-lg md:text-xl font-bold text-foreground mb-4 md:mb-6">
+              Fitness Goal
             </h3>
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-2 md:gap-3 mb-4 md:mb-6">
               {goals.map((goal) => (
                 <button
-                  key={goal}
-                  onClick={() => setFormData({ ...formData, goal })}
-                  className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                    formData.goal === goal
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border bg-card hover:border-primary/50 text-foreground'
+                  key={goal.name}
+                  onClick={() => setFormData({ ...formData, goal: goal.name })}
+                  className={`p-3 md:p-4 rounded-xl border-2 transition-all duration-200 text-sm md:text-base ${
+                    formData.goal === goal.name
+                      ? 'border-primary bg-primary/10 text-primary scale-[1.02]'
+                      : 'border-border bg-card/50 hover:border-primary/50 text-foreground'
                   }`}
                 >
-                  {goal}
+                  <span className="text-lg md:text-xl block mb-1">{goal.icon}</span>
+                  <span className="text-xs md:text-sm font-medium">{goal.name}</span>
                 </button>
               ))}
             </div>
@@ -215,32 +217,30 @@ const AICoachSection = () => {
               disabled={!formData.goal}
               className="w-full"
             >
-              Continue <ChevronRight className="w-5 h-5 ml-2" />
+              Continue <ChevronRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
             </Button>
-          </motion.div>
+          </div>
         );
       case 5:
         return (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-center"
-          >
-            <h3 className="font-display text-2xl font-bold text-foreground mb-6">
-              What's your diet preference?
+          <div className="text-center animate-fade-in">
+            <ProgressIndicator current={5} total={5} />
+            <h3 className="font-display text-lg md:text-xl font-bold text-foreground mb-4 md:mb-6">
+              Diet Preference
             </h3>
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
               {diets.map((diet) => (
                 <button
-                  key={diet}
-                  onClick={() => setFormData({ ...formData, diet })}
-                  className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                    formData.diet === diet
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border bg-card hover:border-primary/50 text-foreground'
+                  key={diet.name}
+                  onClick={() => setFormData({ ...formData, diet: diet.name })}
+                  className={`p-4 md:p-5 rounded-xl border-2 transition-all duration-200 ${
+                    formData.diet === diet.name
+                      ? 'border-primary bg-primary/10 text-primary scale-[1.02]'
+                      : 'border-border bg-card/50 hover:border-primary/50 text-foreground'
                   }`}
                 >
-                  {diet}
+                  <span className="text-2xl md:text-3xl block mb-2">{diet.icon}</span>
+                  <span className="text-xs md:text-sm font-medium">{diet.name}</span>
                 </button>
               ))}
             </div>
@@ -252,84 +252,66 @@ const AICoachSection = () => {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 md:w-5 md:h-5 mr-2 animate-spin" />
                   Generating...
                 </>
               ) : (
                 <>
-                  Generate My Plan <Sparkles className="w-5 h-5 ml-2" />
+                  Generate Plan <Sparkles className="w-4 h-4 md:w-5 md:h-5 ml-2" />
                 </>
               )}
             </Button>
-          </motion.div>
+          </div>
         );
       case 6:
         return results && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="space-y-6"
-          >
-            <div className="text-center mb-6">
-              <h3 className="font-display text-2xl font-bold text-foreground mb-2">
-                Your AI-Powered Plan
+          <div className="space-y-4 md:space-y-5 animate-fade-in">
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full text-primary text-xs md:text-sm mb-2">
+                <Target className="w-3 h-3 md:w-4 md:h-4" />
+                {formData.goal}
+              </div>
+              <h3 className="font-display text-lg md:text-xl font-bold text-foreground">
+                Your Plan
               </h3>
-              <p className="text-muted-foreground">Personalized for your {formData.goal} goal</p>
             </div>
 
-            {/* AI Tip */}
             {results.tip && (
-              <div className="card-premium p-4 border-primary/30 bg-primary/5">
-                <div className="flex items-start gap-3">
-                  <Lightbulb className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-foreground text-sm">{results.tip}</p>
+              <div className="p-3 md:p-4 rounded-xl border border-primary/30 bg-primary/5">
+                <div className="flex items-start gap-2 md:gap-3">
+                  <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0 mt-0.5" />
+                  <p className="text-foreground text-xs md:text-sm leading-relaxed">{results.tip}</p>
                 </div>
               </div>
             )}
 
-            {/* Macros */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="card-premium p-4 text-center">
-                <Calculator className="w-6 h-6 text-primary mx-auto mb-2" />
-                <div className="font-display text-2xl font-bold text-primary">{results.calories}</div>
-                <div className="text-sm text-muted-foreground">Daily Calories</div>
-              </div>
-              <div className="card-premium p-4 text-center">
-                <div className="font-display text-2xl font-bold text-green-500">{results.protein}g</div>
-                <div className="text-sm text-muted-foreground">Protein</div>
-              </div>
-              <div className="card-premium p-4 text-center">
-                <div className="font-display text-2xl font-bold text-orange-500">{results.carbs}g</div>
-                <div className="text-sm text-muted-foreground">Carbs</div>
-              </div>
-              <div className="card-premium p-4 text-center">
-                <div className="font-display text-2xl font-bold text-purple-500">{results.fats}g</div>
-                <div className="text-sm text-muted-foreground">Fats</div>
-              </div>
+            <div className="grid grid-cols-2 gap-2 md:gap-3">
+              <MacroCard icon={<Calculator className="w-4 h-4 md:w-5 md:h-5" />} value={results.calories} label="Calories" color="text-primary" />
+              <MacroCard value={`${results.protein}g`} label="Protein" color="text-green-400" />
+              <MacroCard value={`${results.carbs}g`} label="Carbs" color="text-orange-400" />
+              <MacroCard value={`${results.fats}g`} label="Fats" color="text-purple-400" />
             </div>
 
-            {/* Diet Plan */}
-            <div className="card-premium p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Utensils className="w-5 h-5 text-primary" />
-                <h4 className="font-display text-lg font-bold">Sample Meals</h4>
+            <div className="p-3 md:p-4 rounded-xl border border-border bg-card/50">
+              <div className="flex items-center gap-2 mb-2 md:mb-3">
+                <Utensils className="w-4 h-4 text-primary" />
+                <h4 className="font-display text-sm md:text-base font-bold">Meals</h4>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1 md:space-y-2">
                 {results.dietPlan.map((meal, i) => (
-                  <div key={i} className="text-muted-foreground text-sm">{meal}</div>
+                  <div key={i} className="text-muted-foreground text-xs md:text-sm">{meal}</div>
                 ))}
               </div>
             </div>
 
-            {/* Workout Split */}
-            <div className="card-premium p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Dumbbell className="w-5 h-5 text-primary" />
-                <h4 className="font-display text-lg font-bold">Weekly Split</h4>
+            <div className="p-3 md:p-4 rounded-xl border border-border bg-card/50">
+              <div className="flex items-center gap-2 mb-2 md:mb-3">
+                <Dumbbell className="w-4 h-4 text-primary" />
+                <h4 className="font-display text-sm md:text-base font-bold">Weekly Split</h4>
               </div>
-              <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-1 md:gap-2">
                 {results.workoutSplit.map((day, i) => (
-                  <div key={i} className="text-muted-foreground text-sm">{day}</div>
+                  <div key={i} className="text-muted-foreground text-xs md:text-sm">{day}</div>
                 ))}
               </div>
             </div>
@@ -337,7 +319,7 @@ const AICoachSection = () => {
             <Button variant="hero" className="w-full" onClick={() => { setStep(0); setResults(null); setFormData({ age: '', height: '', weight: '', goal: '', diet: '' }); }}>
               Start Over
             </Button>
-          </motion.div>
+          </div>
         );
       default:
         return null;
@@ -345,62 +327,75 @@ const AICoachSection = () => {
   };
 
   return (
-    <section id="ai-coach" className="py-24 relative overflow-hidden" ref={ref}>
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-muted/10 via-background to-muted/10" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(200_55%_50%_/_0.03)_0%,transparent_70%)]" />
+    <section id="ai-coach" className="py-16 md:py-24 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-muted/5 via-background to-muted/5" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-block px-4 py-2 border border-primary/30 rounded-full text-primary text-sm font-medium uppercase tracking-widest mb-4">
-              Exclusive Feature
+          <div className="order-2 lg:order-1">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 border border-primary/30 rounded-full text-primary text-xs md:text-sm font-medium uppercase tracking-wider mb-4">
+              <Zap className="w-3 h-3 md:w-4 md:h-4" />
+              AI Powered
             </span>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="text-foreground">AI </span>
-              <span className="text-primary text-glow">FITNESS COACH</span>
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
+              <span className="text-foreground">Smart </span>
+              <span className="text-primary">Fitness Coach</span>
             </h2>
-            <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              Get a personalized diet plan and workout split powered by AI. Just answer a few questions and receive your custom fitness blueprint in seconds.
+            <p className="text-muted-foreground text-sm md:text-base lg:text-lg mb-6 md:mb-8 leading-relaxed">
+              Get a personalized diet plan and workout split powered by AI. Answer 5 questions, receive your custom fitness blueprint.
             </p>
-            <div className="space-y-4">
-              {['Personalized calorie calculation', 'Custom macro breakdown', 'Diet-specific meal suggestions', 'Weekly workout schedule'].map((feature, i) => (
-                <motion.div
-                  key={feature}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                  className="flex items-center gap-3"
-                >
-                  <div className="w-2 h-2 rounded-full bg-primary" />
-                  <span className="text-foreground">{feature}</span>
-                </motion.div>
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
+              {[
+                { icon: Calculator, text: 'Calorie Calc' },
+                { icon: Target, text: 'Custom Macros' },
+                { icon: Utensils, text: 'Meal Plans' },
+                { icon: Dumbbell, text: 'Workout Split' },
+              ].map((feature, i) => (
+                <div key={i} className="flex items-center gap-2 md:gap-3">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <feature.icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                  </div>
+                  <span className="text-foreground text-xs md:text-sm font-medium">{feature.text}</span>
+                </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          {/* Right - AI Coach Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="card-premium p-8 border-electric"
-          >
-            {renderStep()}
-          </motion.div>
+          {/* Right - AI Coach Card with rotating border */}
+          <div className="order-1 lg:order-2">
+            <div className="card-rotating-border">
+              <div className="card-rotating-content p-5 md:p-8">
+                {renderStep()}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 };
+
+const ProgressIndicator = ({ current, total }: { current: number; total: number }) => (
+  <div className="flex items-center justify-center gap-1.5 mb-4">
+    {Array.from({ length: total }).map((_, i) => (
+      <div
+        key={i}
+        className={`h-1 rounded-full transition-all duration-300 ${
+          i < current ? 'w-6 bg-primary' : 'w-2 bg-border'
+        }`}
+      />
+    ))}
+  </div>
+);
+
+const MacroCard = ({ icon, value, label, color }: { icon?: React.ReactNode; value: string | number; label: string; color: string }) => (
+  <div className="p-3 md:p-4 rounded-xl border border-border bg-card/50 text-center">
+    {icon && <div className={`${color} mx-auto mb-1`}>{icon}</div>}
+    <div className={`font-display text-lg md:text-xl font-bold ${color}`}>{value}</div>
+    <div className="text-xs text-muted-foreground">{label}</div>
+  </div>
+);
 
 const QuestionStep = ({
   question,
@@ -409,6 +404,8 @@ const QuestionStep = ({
   placeholder,
   type,
   onNext,
+  step,
+  total,
 }: {
   question: string;
   value: string;
@@ -416,6 +413,8 @@ const QuestionStep = ({
   placeholder: string;
   type: string;
   onNext: () => void;
+  step: number;
+  total: number;
 }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
@@ -428,12 +427,9 @@ const QuestionStep = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="text-center"
-    >
-      <h3 className="font-display text-2xl font-bold text-foreground mb-6">{question}</h3>
+    <div className="text-center animate-fade-in">
+      <ProgressIndicator current={step} total={total} />
+      <h3 className="font-display text-lg md:text-xl font-bold text-foreground mb-4 md:mb-6">{question}</h3>
       <input
         type={type}
         value={value}
@@ -441,12 +437,12 @@ const QuestionStep = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         autoFocus
-        className="w-full px-6 py-4 bg-muted border border-border rounded-xl text-foreground text-center text-xl font-display focus:outline-none focus:border-primary transition-colors mb-6 relative z-10"
+        className="w-full px-4 md:px-6 py-3 md:py-4 bg-muted border border-border rounded-xl text-foreground text-center text-lg md:text-xl font-display focus:outline-none focus:border-primary transition-colors mb-4 md:mb-6 relative z-10"
       />
       <Button variant="hero" onClick={onNext} disabled={!value} className="w-full">
-        Continue <ChevronRight className="w-5 h-5 ml-2" />
+        Continue <ChevronRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
       </Button>
-    </motion.div>
+    </div>
   );
 };
 
