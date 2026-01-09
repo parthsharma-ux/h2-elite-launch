@@ -441,7 +441,7 @@ const QuestionStep = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         autoFocus
-        className="w-full px-6 py-4 bg-muted border border-border rounded-xl text-foreground text-center text-xl font-display focus:outline-none focus:border-primary transition-colors mb-6"
+        className="w-full px-6 py-4 bg-muted border border-border rounded-xl text-foreground text-center text-xl font-display focus:outline-none focus:border-primary transition-colors mb-6 relative z-10"
       />
       <Button variant="hero" onClick={onNext} disabled={!value} className="w-full">
         Continue <ChevronRight className="w-5 h-5 ml-2" />
