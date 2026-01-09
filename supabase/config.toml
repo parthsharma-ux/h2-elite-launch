@@ -1,1 +1,4 @@
 project_id = "bfdedxsdvqzfnunrpzgf"
+
+[functions.ai-fitness-coach]
+verify_jwt = false
